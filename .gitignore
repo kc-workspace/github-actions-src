@@ -346,3 +346,4 @@ $RECYCLE.BIN/
 common/temp
 
 .actions-old
+.actions-old.*

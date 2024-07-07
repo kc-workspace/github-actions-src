@@ -1,20 +1,29 @@
-import app, { context } from "../app"
-import runner from "./main"
+jest.mock('@actions/core')
 
-describe("application runner", () => {
-  test("should print info logs with default value", async () => {
-    jest.spyOn(context.plugins.log, "info")
+import { setFailed } from '@actions/core'
 
-    await app.exec(runner)
+import builder from '../app'
+import runner from './main'
 
+describe('application runner', () => {
+  const app = builder.build()
+  const context = app.context
+
+  test('should print info logs with default value', async () => {
+    jest.spyOn(context.plugins.log, 'info')
+    jest.spyOn(context.plugins.input, 'requiredString').mockReturnValueOnce('hello')
+
+    await app.run(runner)
+    expect(setFailed).not.toHaveBeenCalled()
     expect(context.plugins.log.info).toHaveBeenCalledTimes(2)
   })
 
-  test("should print info logs with custom value", async () => {
-    jest.spyOn(context.plugins.log, "info")
+  test('should print info logs with custom value', async () => {
+    jest.spyOn(context.plugins.log, 'info')
+    jest.spyOn(context.plugins.input, 'requiredString').mockReturnValueOnce('hello')
 
-    await app.exec(runner, { name: "name" })
-
+    await app.run(runner, { name: 'name' })
+    expect(setFailed).not.toHaveBeenCalled()
     expect(context.plugins.log.info).toHaveBeenCalledTimes(2)
   })
 })

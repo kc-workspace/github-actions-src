@@ -1,11 +1,20 @@
-import app, { context } from "../app"
-import runner from "./post"
+jest.mock('@actions/core')
 
-describe("[post-hook] application runner", () => {
-  test("should print info logs", async () => {
-    jest.spyOn(context.plugins.log, "info")
+import { setFailed } from '@actions/core'
 
-    app.exec(runner)
+import builder from '../app'
+import runner from './post'
+
+describe('[post-hook] application runner', () => {
+  const app = builder.build()
+  const context = app.context
+
+  test('should print info logs', async () => {
+    jest.spyOn(context.plugins.log, 'info')
+    jest.spyOn(context.plugins.input, 'requiredString').mockReturnValueOnce('hello')
+
+    await app.run(runner)
+    expect(setFailed).not.toHaveBeenCalled()
     expect(context.plugins.log.info).toHaveBeenCalledTimes(1)
   })
 })
