@@ -1,38 +1,41 @@
-import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { existsSync } from 'node:fs'
+import { homedir } from 'node:os'
 import {
-  ContextBuilder,
-  InputContextPlugin,
-  LogContextPlugin,
-  Actions,
-  ExecContextPlugin,
+  AppBuilder,
   CacheContextPlugin,
-  toBool,
-  SystemContextPlugin,
+  ContextBuilder,
+  EnvContextPlugin,
+  ExecContextPlugin,
+  InputContextPlugin,
   IOContextPlugin,
-  HelperContextPlugin,
+  LogContextPlugin,
+  SystemContextPlugin,
+  toBool,
 } from '@kcws/github-actions'
 
-export const context = ContextBuilder.fromPackageJson()
+export const contextBuilder = ContextBuilder.fromPackageJson(__dirname)
+  .addPlugin(new EnvContextPlugin())
   .addPlugin(new LogContextPlugin())
-  .addPlugin(new HelperContextPlugin())
-  .addPlugin(new CacheContextPlugin())
   .addPlugin(new InputContextPlugin())
   .addPlugin(new ExecContextPlugin())
+  .addPlugin(new CacheContextPlugin())
   .addPlugin(new SystemContextPlugin())
   .addPlugin(new IOContextPlugin())
-  .build()
 
-export default Actions.builder(context, context => {
+export default AppBuilder.fromBuilders(contextBuilder, async context => {
   const inputs = context.use('input')
+  const loggers = context.use('log')
 
-  const cwd = inputs.optionalString('workdir') ?? process.cwd()
-  const toolFile = join(cwd, '.tool-versions')
-  let toolInstall = inputs.required('install-tools', toBool)
+  const workDirectory = inputs.optionalString('workdir') ?? process.cwd()
+  const asdfDirectory = inputs.optionalString('asdfdir') ?? join(homedir(), '.asdf')
 
-  if (toolInstall && !existsSync(toolFile)) {
-    context.use('log').warn('cannot install tools because file is missing', {
+  const toolFile = join(workDirectory, '.tool-versions')
+  const toolFileExist = existsSync(toolFile)
+
+  let toolInstall = inputs.optional('install-tools', toBool) ?? false
+  if (toolInstall && !toolFileExist) {
+    loggers.warn('cannot install tools because file is missing', {
       title: '.tool-versions file is missing',
       file: toolFile,
     })
@@ -41,15 +44,28 @@ export default Actions.builder(context, context => {
     toolInstall = false
   }
 
+  const ref = inputs.requiredString('ref')
+  const cacheEnabled = inputs.optional('cache-enabled', toBool) ?? true
+  const key = inputs.optionalString('cache-key')
+  const cacheKeys = []
+
+  if (ref) cacheKeys.push(ref)
+  if (toolFileExist) cacheKeys.push(await context.use('io').hash('.tool-versions', workDirectory))
+  if (key) cacheKeys.push(key)
+
+  loggers.debug('Install reference: {0}', ref)
+  loggers.debug('Install tools: {0}', toolInstall)
+  loggers.debug('Install cache: {0}', cacheEnabled)
+  loggers.debug('Install cache keys: {0}', cacheKeys.join(','))
   return {
-    ref: inputs.requiredString('ref'),
-    tool: toolInstall,
-    cache: {
-      enabled: inputs.required('cache-enabled', toBool),
-      keys: inputs.optionalString('cache-key') ?? '',
+    input: {
+      ref,
+      toolInstall,
+      cacheEnabled,
+      cacheKeys,
+      toolFile,
+      asdfDirectory,
+      workDirectory,
     },
-    asdfDir: inputs.optionalString('asdfdir') ?? join(homedir(), '.asdf'),
-    toolFile: toolFile,
-    workDir: cwd,
   }
 })

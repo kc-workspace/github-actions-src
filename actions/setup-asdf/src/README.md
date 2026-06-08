@@ -1,8 +1,6 @@
-# Example action
-<!-- TODO: Update above title to <name> action -->
+# setup-asdf action
 
-<!-- TODO: Update below description -->
-The example action for doing nothing.
+Set up asdf cli, plugins and tools.
 
 ## Usage
 

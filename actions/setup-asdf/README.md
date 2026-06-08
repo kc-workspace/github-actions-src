@@ -1,5 +1,5 @@
-# Example actions
+# setup-asdf action
 
 <!-- This should be developer documentation -->
 
-The example GitHub Actions starter for this repository.
+GitHub Actions for set up asdf cli, plugins and tools.

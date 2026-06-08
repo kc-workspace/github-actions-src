@@ -1,5 +1,5 @@
-name: Typescript Example
-description: Example actions written on Typescript
+name: setup-asdf
+description: Set up asdf cli, plugins and tools.
 author: Kamontat Chantrachirathumrong
 
 inputs:
@@ -8,13 +8,13 @@ inputs:
     default: master
   install-tools:
     description: install tool based from .tool-versions file
-    default: "false"
+    required: false
   cache-enabled:
     description: enabled caching downloaded asdf and tools
-    default: "true"
+    required: false
   cache-key:
     description: cache key for invalidate cache
-    default: ""
+    required: false
   asdfdir:
     description: a directory where asdf should be
     required: false
@@ -31,6 +31,6 @@ inputs:
 
 runs:
   using: node20
-  pre: pre.js
   main: index.js
+  pre: pre.js
   post: post.js
