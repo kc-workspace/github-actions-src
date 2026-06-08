@@ -33,7 +33,7 @@ jobs:
       - name: with tools enabled
         uses: kc-workspace/github-actions/setup-asdf@main
         with:
-          workdir: .github/tests/setup-asdf
+          workdir: .github/fixtures/setup-asdf
           install-tools: true
   test-create-hosts-dryrun:
     runs-on: ubuntu-latest
