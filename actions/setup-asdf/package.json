@@ -1,13 +1,6 @@
 {
   "name": "@kcactions/setup-asdf",
   "version": "0.1.0",
-  "main": "lib/index.js",
-  "homepage": "https://github.com/kc-workspace/github-actions-src/tree/main/actions/setup-asdf",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kc-workspace/github-actions-src.git",
-    "directory": "actions/setup-asdf"
-  },
   "author": {
     "name": "Kamontat Chantrachirathumrong",
     "email": "kcws@kc.in.th",
@@ -19,18 +12,18 @@
     "clean": "heft clean"
   },
   "dependencies": {
-    "@actions/core": "1.10.1",
-    "@kcws/github-actions": "0.9.0"
+    "@kcws/github-actions": "0.15.1"
   },
   "devDependencies": {
-    "@kcws/eslint-config": "1.21.1",
-    "@kcws/heft-node-rig": "0.26.0",
-    "@kcws/lintstaged-config": "0.43.2",
-    "@kcws/prettier-config": "0.17.2",
-    "@rushstack/heft": "0.66.18",
+    "@actions/core": "1.10.1",
+    "@kcws/eslint-config": "1.31.0",
+    "@kcws/heft-node-rig": "0.38.0",
+    "@kcws/lintstaged-config": "1.4.1",
+    "@kcws/prettier-config": "0.24.1",
+    "@rushstack/heft": "0.67.0",
     "@types/heft-jest": "1.0.6",
-    "@types/node": "20.14.2",
-    "prettier": "3.3.2"
+    "@types/node": "22.5.4",
+    "prettier": "3.3.3"
   },
   "engines": {
     "node": ">=20"

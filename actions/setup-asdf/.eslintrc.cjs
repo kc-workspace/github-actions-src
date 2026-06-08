@@ -4,5 +4,6 @@ module.exports = createConfig({
   profile: 'node',
   jest: true,
   prettier: true,
+  commonjs: true,
   ecma: 'latest',
 })
