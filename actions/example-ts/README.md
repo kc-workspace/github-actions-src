@@ -1,4 +1,4 @@
-# Example actions
+# Example action
 
 <!-- This should be developer documentation -->
 
